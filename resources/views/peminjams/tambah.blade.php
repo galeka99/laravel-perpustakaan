@@ -1,6 +1,7 @@
 @extends('layout.master')
 @section('content')
 <div class="container p-3">
+  @include('_partial/validation')
   <form action="{{ url('/peminjam') }}" method="POST">
     @csrf
     <div class="form-group mb-3">

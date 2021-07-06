@@ -9,17 +9,22 @@ use Illuminate\Http\Request;
 
 class PeminjamController extends Controller
 {
-    function peminjam()
+    function index(Request $request)
     {
-        $peminjam = ['Jessica', 'Maryono', 'Dina', 'Rusli'];
-        return view('peminjams.data_peminjam', compact('peminjam'));
-    }
+        $maxItem = 25;
+        $peminjams = null;
+        if ($request->has('q') && $request->filled('q')) {
+            $query = $request->get('q');
+            $peminjams = Peminjam::where('kode_peminjam', 'LIKE', "%$query%")
+                ->orWhere('nama_peminjam', 'LIKE', "%$query%")
+                ->orWhere('tgl_lahir', 'LIKE', "%$query%")
+                ->orWhere('alamat', 'LIKE', "%$query%")
+                ->paginate();
+        } else {
+            $peminjams = Peminjam::paginate($maxItem);
+        }
 
-    function index()
-    {
-        $peminjams = Peminjam::all()->sortBy('nama_peminjam');
-        $total_peminjam = Peminjam::all()->count();
-        return view('peminjams.index', ['peminjams' => $peminjams, 'total' => $total_peminjam]);
+        return view('peminjams.index', ['peminjams' => $peminjams]);
     }
 
     function add()
@@ -30,6 +35,15 @@ class PeminjamController extends Controller
 
     function store(Request $request)
     {
+        $this->validate($request, [
+            'kode' => 'required|string',
+            'nama' => 'required|string|max:40',
+            'tanggal' => 'required|date',
+            'alamat' => 'required|string',
+            'jenis' => 'required|numeric',
+            'telepon' => 'required|numeric'
+        ]);
+
         $peminjam = new Peminjam([
             'kode_peminjam' => $request->post('kode'),
             'nama_peminjam' => $request->post('nama'),
@@ -44,7 +58,8 @@ class PeminjamController extends Controller
             'nomor_telepon' => $request->post('telepon'),
         ]);
         $telepon->save();
-        return redirect('/peminjam');
+        return redirect('/peminjam')->with('alert', 'success')
+            ->with('message', 'Berhasil menambahkan peminjam');
     }
 
     function edit($id)
@@ -68,7 +83,8 @@ class PeminjamController extends Controller
         $peminjam->telepon->save();
         $peminjam->save();
 
-        return redirect('/peminjam');
+        return redirect('/peminjam')->with('alert', 'success')
+            ->with('message', 'Berhasil merubah peminjam');
     }
 
     function delete($id)
@@ -77,7 +93,8 @@ class PeminjamController extends Controller
         if (!$peminjam) return redirect('/peminjam');
         $peminjam->delete();
 
-        return redirect('/peminjam');
+        return redirect('/peminjam')->with('alert', 'success')
+            ->with('message', 'Berhasil menghapus peminjam');
     }
 
     function collection()
