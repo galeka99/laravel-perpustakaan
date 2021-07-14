@@ -12,6 +12,7 @@ class CreatePeminjamTable extends Migration
             $table->id();
             $table->string('kode_peminjam')->unique();
             $table->string('nama_peminjam');
+            $table->string('foto_peminjam', 32)->nullable();
             $table->date('tgl_lahir');
             $table->string('alamat');
             $table->unsignedBigInteger('jenis_id');

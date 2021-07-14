@@ -6,6 +6,7 @@ use App\Models\JenisPeminjam;
 use App\Models\Peminjam;
 use App\Models\Telepon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PeminjamController extends Controller
 {
@@ -38,15 +39,21 @@ class PeminjamController extends Controller
         $this->validate($request, [
             'kode' => 'required|string',
             'nama' => 'required|string|max:40',
+            'foto' => 'required|image|mimes:jpeg,jpg,png',
             'tanggal' => 'required|date',
             'alamat' => 'required|string',
             'jenis' => 'required|numeric',
             'telepon' => 'required|numeric'
         ]);
 
+        $foto = $request->file('foto');
+        $photoId = md5_file($foto->getRealPath());
+        Storage::putFileAs('photo', $foto, $photoId);
+
         $peminjam = new Peminjam([
             'kode_peminjam' => $request->post('kode'),
             'nama_peminjam' => $request->post('nama'),
+            'foto_peminjam' => $photoId,
             'tgl_lahir' => $request->post('tanggal'),
             'alamat' => $request->post('alamat'),
             'jenis_id' => $request->post('jenis'),
@@ -81,6 +88,13 @@ class PeminjamController extends Controller
         $peminjam->jenis_id = $request->post('jenis');
         $peminjam->telepon->nomor_telepon = $request->post('telepon');
         $peminjam->telepon->save();
+        if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
+            $foto = $request->file('foto');
+            $photoId = md5_file($foto->getRealPath());
+            Storage::delete('photo/' . $peminjam->foto_peminjam);
+            Storage::putFileAs('photo', $foto, $photoId);
+            $peminjam->foto_peminjam = $photoId;
+        }
         $peminjam->save();
 
         return redirect('/peminjam')->with('alert', 'success')
@@ -111,5 +125,11 @@ class PeminjamController extends Controller
             'where' => $peminjams->where('kode_peminjam', '=', 'P0007'),
             'wherein' => $peminjams->whereIn('kode_peminjam', ['P0003', 'P0007', 'P0010'])
         ], 200);
+    }
+
+    function lihat_foto($id)
+    {
+        $foto = Storage::get("photo/$id");
+        return response($foto, 200, ['Content-Type' => 'image/png;image/jpg']);
     }
 }

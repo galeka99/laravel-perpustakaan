@@ -26,6 +26,7 @@
             <th>Alamat</th>
             <th>Nomor Telepon</th>
             <th>Jenis Peminjam</th>
+            <th>Foto Peminjam</th>
             <th colspan="2">Aksi</th>
           </tr>
         </thead>
@@ -38,6 +39,13 @@
               <td>{{ $peminjam->alamat }}</td>
               <td>{{ $peminjam->telepon->nomor_telepon }}</td>
               <td>{{ $peminjam->jenis->nama }}</td>
+              <td>
+                @if ($peminjam->foto_peminjam)
+                <button class="btn btn-sm btn-link text-secondary" onclick="showPhoto('{{ $peminjam->foto_peminjam }}')">Lihat Foto</button> 
+                @else
+                -
+                @endif
+              </td>
               <td><a href="{{ url('/peminjam/' . $peminjam->id) }}" class="btn btn-sm btn-link text-primary">Ubah</a>
               </td>
               <td>
@@ -57,5 +65,28 @@
       </table>
       {{ $peminjams->links('_partial/paginator', ['items' => $peminjams]) }}
     </div>
+    <div id="foto-modal" class="modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Foto Peminjam</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img id="foto-peminjam" src="" alt="" class="w-100">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+    function showPhoto(id) {
+      const imageElement = document.querySelector('img#foto-peminjam');
+      imageElement.setAttribute('src', `{{ url('photo') }}/${id}`);
+      $('#foto-modal').modal('show');
+    }
+    </script>
   </div>
 @endsection

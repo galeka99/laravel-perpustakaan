@@ -1,7 +1,7 @@
 @extends('layout.master')
 @section('content')
 <div class="container p-3">
-  <form action="{{ url('/peminjam/'.$peminjam->id) }}" method="POST">
+  <form action="{{ url('/peminjam/'.$peminjam->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="form-group mb-3">
@@ -18,6 +18,10 @@
     <div class="form-group mb-3">
       <label for="nama_peminjam">Nama Peminjam</label>
       <input type="text" name="nama" id="nama_peminjam" class="form-control" placeholder="John Doe" value="{{ $peminjam->nama_peminjam }}">
+    </div>
+    <div class="form-group mb-3">
+      <label for="foto_peminjam">Foto Peminjam</label>
+      <input type="file" name="foto" id="foto_peminjam" class="form-control" accept="image/*">
     </div>
     <div class="form-group mb-3">
       <label for="tanggal_lahir">Tanggal Lahir</label>

@@ -10,7 +10,7 @@ class Peminjam extends Model
     use HasFactory;
 
     protected $table = 'peminjam';
-    protected $fillable = ['kode_peminjam', 'nama_peminjam', 'tgl_lahir', 'alamat', 'jenis_id'];
+    protected $fillable = ['kode_peminjam', 'nama_peminjam', 'foto_peminjam', 'tgl_lahir', 'alamat', 'jenis_id'];
 
     public function telepon()
     {

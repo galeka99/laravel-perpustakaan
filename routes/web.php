@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [IndexController::class, 'index']);
 
 Route::view('/home', 'home');
+Route::get('/photo/{id}', [PeminjamController::class, 'lihat_foto']);
 Route::get('/data_peminjam', [PeminjamController::class, 'peminjam']);
 Route::get('/peminjam', [PeminjamController::class, 'index']);
 Route::post('/peminjam', [PeminjamController::class, 'store']);
