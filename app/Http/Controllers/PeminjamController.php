@@ -111,22 +111,6 @@ class PeminjamController extends Controller
             ->with('message', 'Berhasil menghapus peminjam');
     }
 
-    function collection()
-    {
-        $peminjams = Peminjam::all();
-        return response()->json([
-            'all' => $peminjams,
-            'first' => $peminjams->first(),
-            'last' => $peminjams->last(),
-            'count' => $peminjams->count(),
-            'take_2' => $peminjams->take(2),
-            'skip_1' => $peminjams->skip(1),
-            'pluck' => $peminjams->pluck('nama_peminjam'),
-            'where' => $peminjams->where('kode_peminjam', '=', 'P0007'),
-            'wherein' => $peminjams->whereIn('kode_peminjam', ['P0003', 'P0007', 'P0010'])
-        ], 200);
-    }
-
     function lihat_foto($id)
     {
         $foto = Storage::get("photo/$id");
